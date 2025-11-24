@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Next.js / OpenNext build output
+.next/
+out/
+dist/
+.open-next/
+.cache/
+.vercel/
+
+# Cloudflare / Wrangler
+.wrangler/
+wrangler.toml.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env*.local
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.code-workspace
+
+# Tests / coverage
+coverage/
+.nyc_output/
+
+# Debug / misc
+*.tgz
+*.tmp
+*.temp
+
+# Local data / uploads (if any)
+uploads/
