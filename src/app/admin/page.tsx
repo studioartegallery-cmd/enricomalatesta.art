@@ -23,65 +23,63 @@ export default function AdminPage() {
         </section>
 
         <section className="grid-wrapper">
-          <article className="art-card">
-            <div className="art-scroll">
-              <div className="art-block">
-                <div className="art-meta">
-                  <div className="art-title">Add Artwork</div>
-                  <div className="art-details">
-                    Create and manage artworks shown on the main grid.
-                  </div>
-                  <div className="art-footer">
-                    <Link href="/admin/artwork" className="buy-button">
-                      Go to Add Artwork
-                    </Link>
-                  </div>
+          <div className="art-grid">
+            <article className="art-card">
+              <div className="art-meta">
+                <div className="art-title">Add Artwork</div>
+                <div className="art-details">
+                  Create and manage artworks shown on the main grid.
+                </div>
+                <div className="art-footer">
+                  <Link href="/admin/artwork" className="buy-button">
+                    Go to Add Artwork
+                  </Link>
                 </div>
               </div>
+            </article>
 
-              <div className="art-block">
-                <div className="art-meta">
-                  <div className="art-title">Add Blog</div>
-                  <div className="art-details">
-                    Create or edit blog posts that appear in the Blog section.
-                  </div>
-                  <div className="art-footer">
-                    <Link href="/admin/blog" className="buy-button">
-                      Go to Add Blog
-                    </Link>
-                  </div>
+            <article className="art-card">
+              <div className="art-meta">
+                <div className="art-title">Add Blog</div>
+                <div className="art-details">
+                  Create or edit blog posts that appear in the Blog section.
+                </div>
+                <div className="art-footer">
+                  <Link href="/admin/blog" className="buy-button">
+                    Go to Add Blog
+                  </Link>
                 </div>
               </div>
+            </article>
 
-              <div className="art-block">
-                <div className="art-meta">
-                  <div className="art-title">Edit Bio</div>
-                  <div className="art-details">
-                    Update your artist biography text used on the site.
-                  </div>
-                  <div className="art-footer">
-                    <Link href="/admin/bio" className="buy-button">
-                      Go to Edit Bio
-                    </Link>
-                  </div>
+            <article className="art-card">
+              <div className="art-meta">
+                <div className="art-title">Edit Bio</div>
+                <div className="art-details">
+                  Update your artist biography text used on the site.
+                </div>
+                <div className="art-footer">
+                  <Link href="/admin/bio" className="buy-button">
+                    Go to Edit Bio
+                  </Link>
                 </div>
               </div>
+            </article>
 
-              <div className="art-block">
-                <div className="art-meta">
-                  <div className="art-title">Edit Terms &amp; Privacy</div>
-                  <div className="art-details">
-                    Replace or update the legal documents stored in R2.
-                  </div>
-                  <div className="art-footer">
-                    <Link href="/admin/legal" className="buy-button">
-                      Go to Legal Editor
-                    </Link>
-                  </div>
+            <article className="art-card">
+              <div className="art-meta">
+                <div className="art-title">Edit Terms &amp; Privacy</div>
+                <div className="art-details">
+                  Replace or update the legal documents stored in R2.
+                </div>
+                <div className="art-footer">
+                  <Link href="/admin/legal" className="buy-button">
+                    Go to Legal Editor
+                  </Link>
                 </div>
               </div>
-            </div>
-          </article>
+            </article>
+          </div>
         </section>
       </main>
 
