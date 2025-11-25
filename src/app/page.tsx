@@ -1,42 +1,40 @@
 "use client";
 
-import React from "react";
+import { useState } from "react";
 
-const ARTWORKS = [
+type Filter = "all" | "paintings" | "digital";
+
+type Artwork = {
+  id: number;
+  title: string;
+  subtitle: string;
+  type: Filter;
+  price: string;
+};
+
+const ARTWORKS: Artwork[] = [
   {
     id: 1,
+    title: "UNTITLED PAINTING II",
+    subtitle: "Acrylic on panel · 60 × 60 cm",
     type: "paintings",
-    title: "Untitled Painting",
-    details: "Acrylic on canvas · 80 × 80 cm",
-    price: "€ 1,200",
-  },
-  {
-    id: 2,
-    type: "digital",
-    title: "Digital Study #1",
-    details: "Digital art · 4000 × 4000 px",
-    price: "€ 480",
-  },
-  {
-    id: 3,
-    type: "paintings",
-    title: "Untitled Painting II",
-    details: "Acrylic on panel · 60 × 60 cm",
     price: "€ 900",
   },
   {
-    id: 4,
+    id: 2,
+    title: "DIGITAL FRAGMENT",
+    subtitle: "Digital art · 5000 × 3500 px",
     type: "digital",
-    title: "Digital Fragment",
-    details: "Digital art · 5000 × 3500 px",
     price: "€ 520",
   },
 ];
 
-type Filter = "all" | "paintings" | "digital";
+const R2_BASE = process.env.NEXT_PUBLIC_R2_BASE || "";
+const TERMS_URL = R2_BASE ? `${R2_BASE}/admin/terms.pdf` : "#";
+const PRIVACY_URL = R2_BASE ? `${R2_BASE}/admin/privacy.pdf` : "#";
 
 export default function HomePage() {
-  const [filter, setFilter] = React.useState<Filter>("all");
+  const [filter, setFilter] = useState<Filter>("all");
 
   const filtered = ARTWORKS.filter((art) =>
     filter === "all" ? true : art.type === filter
@@ -49,58 +47,76 @@ export default function HomePage() {
       </header>
 
       <main className="main">
-        <section className="filters">
+        <div className="filters">
           <button
-            className={["filter-button", filter === "all" && "active"].filter(Boolean).join(" ")}
+            className={`filter-button ${filter === "all" ? "active" : ""}`}
             onClick={() => setFilter("all")}
           >
             All
           </button>
           <button
-            className={["filter-button", filter === "paintings" && "active"].filter(Boolean).join(" ")}
+            className={`filter-button ${filter === "paintings" ? "active" : ""}`}
             onClick={() => setFilter("paintings")}
           >
             Paintings
           </button>
           <button
-            className={["filter-button", filter === "digital" && "active"].filter(Boolean).join(" ")}
+            className={`filter-button ${filter === "digital" ? "active" : ""}`}
             onClick={() => setFilter("digital")}
           >
             Digital Art
           </button>
-        </section>
+        </div>
 
         <section className="grid-wrapper">
-          <div className="art-grid">
-            {filtered.map((art) => (
-              <article key={art.id} className="art-card">
-                <div className="art-image placeholder">Image</div>
-                <div className="art-meta">
-                  <div className="art-title">{art.title}</div>
-                  <div className="art-details">{art.details}</div>
-                  <div className="art-price">{art.price}</div>
+          <article className="art-card">
+            <div className="art-scroll">
+              {filtered.map((art) => (
+                <div key={art.id} className="art-block">
+                  <div className="art-image placeholder" />
+                  <div className="art-meta">
+                    <div className="art-title">{art.title}</div>
+                    <div className="art-details">{art.subtitle}</div>
+                    <div className="art-footer">
+                      <span className="art-price">{art.price}</span>
+                      <a
+                        href="https://studioarte.art"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="buy-button"
+                      >
+                        Buy
+                      </a>
+                    </div>
+                  </div>
                 </div>
-                <a
-                  className="buy-button"
-                  href="https://studioarte.art"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Buy
-                </a>
-              </article>
-            ))}
-          </div>
+              ))}
+            </div>
+          </article>
         </section>
       </main>
 
       <footer className="footer">
         <nav className="footer-nav">
-          <a href="#contact">About</a>
-          <a href="#terms">Terms</a>
-          <a href="#privacy">Privacy</a>
-          <a href="#cookies">Cookies</a>
-          <a href="#blog">Blog</a>
+          <a href="/about">About</a>
+          <a href={TERMS_URL} download>
+            Terms
+          </a>
+          <a href={PRIVACY_URL} download>
+            Privacy
+          </a>
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              document.cookie =
+                "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+              window.location.reload();
+            }}
+          >
+            Cookies
+          </a>
+          <a href="/blog">Blog</a>
         </nav>
       </footer>
     </div>

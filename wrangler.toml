@@ -1,0 +1,6 @@
+name = "enricomalatesta-art"
+compatibility_date = "2024-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Tell Wrangler where next-on-pages outputs the static build for Pages
+pages_build_output_dir = ".vercel/output/static"
