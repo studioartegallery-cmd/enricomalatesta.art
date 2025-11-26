@@ -5,3 +5,9 @@ compatibility_flags = ["nodejs_compat"]
 # Tell Wrangler where next-on-pages outputs the static build for Pages
 
 pages_build_output_dir = ".vercel/output/static"
+
+
+[[r2_buckets]]
+binding = "ARTWORKS"
+bucket_name = "emart"  # R2 bucket name
+jurisdiction = "auto"
