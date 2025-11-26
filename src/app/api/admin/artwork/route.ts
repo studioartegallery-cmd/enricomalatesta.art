@@ -24,6 +24,14 @@ function slugify(input: string): string {
   return base || "artwork";
 }
 
+
+export async function GET() {
+  return new Response(
+    JSON.stringify({ ok: true, message: "Artwork upload endpoint ready" }),
+    { status: 200, headers: { "Content-Type": "application/json" } }
+  );
+}
+
 export async function POST(request: Request): Promise<Response> {
   try {
     const form = await request.formData();
