@@ -6,7 +6,17 @@ type Env = {
   ARTWORKS?: R2Bucket;
 };
 
+type R2Object = {
+  key: string;
+  customMetadata?: Record<string, string>;
+};
+
+type R2ListResult = {
+  objects: R2Object[];
+};
+
 type R2Bucket = {
+  list: (options?: { prefix?: string; limit?: number; cursor?: string }) => Promise<R2ListResult>;
   put: (
     key: string,
     value: ArrayBuffer | Uint8Array | ReadableStream,
@@ -16,7 +26,18 @@ type R2Bucket = {
       };
       customMetadata?: Record<string, string>;
     }
-  ) => Promise<unknown>;
+  ) => Promise<void>;
+};
+
+type Filter = "all" | "paintings" | "digital";
+
+type Artwork = {
+  id: string;
+  title: string;
+  subtitle: string;
+  type: Filter;
+  price: string;
+  imageUrl: string;
 };
 
 function slugify(input: string): string {
@@ -24,34 +45,98 @@ function slugify(input: string): string {
   return base || "artwork";
 }
 
-
-export async function GET() {
-  return new Response(
-    JSON.stringify({ ok: true, message: "Artwork upload endpoint ready" }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
-  );
+function titleFromKey(key: string): string {
+  const parts = key.split("/");
+  const file = parts[parts.length - 1] || "";
+  const noExt = file.replace(/\.webp$/i, "");
+  const noPrefix = noExt.replace(/^\d+-/, "");
+  const spaced = noPrefix.replace(/-/g, " ").replace(/\s+/g, " ").trim();
+  if (!spaced) return "UNTITLED";
+  return spaced.toUpperCase();
 }
 
-export async function POST(request: Request): Promise<Response> {
+export async function GET() {
   try {
-    const form = await request.formData();
-    const file = form.get("file");
+    const { env } = getRequestContext() as { env: Env };
+    const bucket = env.ARTWORKS;
+    if (!bucket) {
+      return new Response("ARTWORKS bucket not configured", { status: 500 });
+    }
+
+    const list = await bucket.list({ prefix: "artworks/" });
+
+    const items: Artwork[] = list.objects.map((obj) => {
+      const meta = obj.customMetadata || {};
+
+      const style = meta.style || "";
+      const technique = meta.technique || "";
+      const width = meta.widthCm || "";
+      const height = meta.heightCm || "";
+      const price = meta.price || "";
+
+      const fallbackFromKey = titleFromKey(obj.key);
+      const title =
+        (meta.title && meta.title.trim()) ||
+        (style && style.trim()) ||
+        fallbackFromKey;
+
+      const subtitleParts: string[] = [];
+      if (style) subtitleParts.push(style);
+      if (technique) subtitleParts.push(technique);
+      if (width && height) subtitleParts.push(`${width} × ${height} cm`);
+      const subtitle = subtitleParts.join(" · ");
+
+      let type: Filter = "paintings";
+      const kind = `${style} ${technique}`.toLowerCase();
+      if (kind.includes("digital")) {
+        type = "digital";
+      }
+
+      return {
+        id: obj.key,
+        title,
+        subtitle,
+        type,
+        price: price || "",
+        imageUrl: `/api/artwork/image?key=${encodeURIComponent(obj.key)}`,
+      };
+    });
+
+    items.sort((a, b) => (a.id < b.id ? 1 : -1));
+
+    return new Response(JSON.stringify(items), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (err) {
+    console.error("Error listing artworks from R2", err);
+    return new Response("Internal error", { status: 500 });
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const formData = await req.formData();
+
+    const file = formData.get("file");
     if (!(file instanceof File)) {
       return new Response("Missing file", { status: 400 });
     }
 
-    const artist = (form.get("artist") as string) || "";
-    const title = (form.get("title") as string) || "";
-    const style = (form.get("style") as string) || "";
-    const technique = (form.get("technique") as string) || "";
-    const widthCm = (form.get("widthCm") as string) || "";
-    const heightCm = (form.get("heightCm") as string) || "";
-    const price = (form.get("price") as string) || "";
+    const artist = (formData.get("artist") ?? "").toString();
+    const title = (formData.get("title") ?? "").toString();
+    const style = (formData.get("style") ?? "").toString();
+    const technique = (formData.get("technique") ?? "").toString();
+    const widthCm = (formData.get("widthCm") ?? "").toString();
+    const heightCm = (formData.get("heightCm") ?? "").toString();
+    const price = (formData.get("price") ?? "").toString();
 
     const arrayBuffer = await file.arrayBuffer();
     const bytes = new Uint8Array(arrayBuffer);
 
-  const { env } = getRequestContext() as { env: Env };
+    const { env } = getRequestContext() as { env: Env };
     const bucket = env.ARTWORKS;
     if (!bucket) {
       return new Response("R2 bucket binding ARTWORKS is not configured", { status: 500 });
@@ -61,7 +146,7 @@ export async function POST(request: Request): Promise<Response> {
     const datePrefix = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}/${String(
       now.getDate()
     ).padStart(2, "0")}`;
-    const safeTitle = slugify(title || "untitled");
+    const safeTitle = slugify(title || style || "untitled");
     const key = `artworks/${datePrefix}/${Date.now()}-${safeTitle}.webp`;
 
     await bucket.put(key, bytes, {
@@ -79,8 +164,7 @@ export async function POST(request: Request): Promise<Response> {
       },
     });
 
-    const base = (process.env.NEXT_PUBLIC_R2_BASE || "").replace(/\/+$/, "");
-    const publicUrl = base ? `${base}/${key}` : "";
+    const publicUrl = `/api/artwork/image?key=${encodeURIComponent(key)}`;
 
     return new Response(JSON.stringify({ key, publicUrl }), {
       status: 200,
