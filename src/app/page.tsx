@@ -91,7 +91,7 @@ export default function HomePage() {
       <div className="art-title">{art.title}</div>
       <div className="art-details">{art.subtitle}</div>
       <div className="art-footer">
-      <span className="art-price">{art.price}</span>
+      <span className="art-price">€/$ {art.price}</span>
       <a
       href="https://studioarte.art"
       target="_blank"

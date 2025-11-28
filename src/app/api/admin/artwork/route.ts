@@ -16,7 +16,12 @@ type R2ListResult = {
 };
 
 type R2Bucket = {
-  list: (options?: { prefix?: string; limit?: number; cursor?: string }) => Promise<R2ListResult>;
+  list: (options?: {
+    prefix?: string;
+    limit?: number;
+    cursor?: string;
+    include?: ("customMetadata")[];
+  }) => Promise<R2ListResult>;
   put: (
     key: string,
     value: ArrayBuffer | Uint8Array | ReadableStream,
@@ -41,7 +46,11 @@ type Artwork = {
 };
 
 function slugify(input: string): string {
-  const base = input.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  const base = input
+  .trim()
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-+|-+$/g, "");
   return base || "artwork";
 }
 
@@ -63,7 +72,10 @@ export async function GET() {
       return new Response("ARTWORKS bucket not configured", { status: 500 });
     }
 
-    const list = await bucket.list({ prefix: "artworks/" });
+    const list = await bucket.list({
+      prefix: "artworks/",
+      include: ["customMetadata"],
+    });
 
     const items: Artwork[] = list.objects.map((obj) => {
       const meta = obj.customMetadata || {};
@@ -76,9 +88,9 @@ export async function GET() {
 
       const fallbackFromKey = titleFromKey(obj.key);
       const title =
-        (meta.title && meta.title.trim()) ||
-        (style && style.trim()) ||
-        fallbackFromKey;
+      (meta.title && meta.title.trim()) ||
+      (style && style.trim()) ||
+      fallbackFromKey;
 
       const subtitleParts: string[] = [];
       if (style) subtitleParts.push(style);
@@ -139,13 +151,15 @@ export async function POST(req: Request) {
     const { env } = getRequestContext() as { env: Env };
     const bucket = env.ARTWORKS;
     if (!bucket) {
-      return new Response("R2 bucket binding ARTWORKS is not configured", { status: 500 });
+      return new Response("R2 bucket binding ARTWORKS is not configured", {
+        status: 500,
+      });
     }
 
     const now = new Date();
-    const datePrefix = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}/${String(
-      now.getDate()
-    ).padStart(2, "0")}`;
+    const datePrefix = `${now.getFullYear()}/${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}/${String(now.getDate()).padStart(2, "0")}`;
     const safeTitle = slugify(title || style || "untitled");
     const key = `artworks/${datePrefix}/${Date.now()}-${safeTitle}.webp`;
 
