@@ -77,7 +77,12 @@ export async function GET() {
       include: ["customMetadata"],
     });
 
-    const items: Artwork[] = list.objects.map((obj) => {
+    // Only keep real .webp image objects; ignore folder markers or other junk keys
+    const imageObjects = list.objects.filter((obj) =>
+    /\.webp$/i.test(obj.key)
+    );
+
+    const items: Artwork[] = imageObjects.map((obj) => {
       const meta = obj.customMetadata || {};
 
       const style = meta.style || "";
