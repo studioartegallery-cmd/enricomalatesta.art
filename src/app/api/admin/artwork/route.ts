@@ -15,6 +15,11 @@ type R2ListResult = {
   objects: R2Object[];
 };
 
+type R2ObjectBody = {
+  arrayBuffer: () => Promise<ArrayBuffer>;
+  customMetadata?: Record<string, string>;
+};
+
 type R2Bucket = {
   list: (options?: {
     prefix?: string;
@@ -32,6 +37,8 @@ type R2Bucket = {
       customMetadata?: Record<string, string>;
     }
   ) => Promise<void>;
+  delete: (key: string) => Promise<void>;
+  get: (key: string) => Promise<R2ObjectBody | null>;
 };
 
 type Filter = "all" | "paintings" | "digital";
@@ -43,6 +50,11 @@ type Artwork = {
   type: Filter;
   price: string;
   imageUrl: string;
+  artist: string;
+  style: string;
+  technique: string;
+  widthCm: string;
+  heightCm: string;
 };
 
 function slugify(input: string): string {
@@ -78,13 +90,12 @@ export async function GET() {
     });
 
     // Only keep real .webp image objects; ignore folder markers or other junk keys
-    const imageObjects = list.objects.filter((obj) =>
-    /\.webp$/i.test(obj.key)
-    );
+    const imageObjects = list.objects.filter((obj) => /\.webp$/i.test(obj.key));
 
     const items: Artwork[] = imageObjects.map((obj) => {
       const meta = obj.customMetadata || {};
 
+      const artist = meta.artist || "";
       const style = meta.style || "";
       const technique = meta.technique || "";
       const width = meta.widthCm || "";
@@ -116,6 +127,11 @@ export async function GET() {
         type,
         price: price || "",
         imageUrl: `/api/artwork/image?key=${encodeURIComponent(obj.key)}`,
+                                              artist,
+                                              style,
+                                              technique,
+                                              widthCm: width,
+                                              heightCm: height,
       };
     });
 
@@ -193,6 +209,104 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     console.error("R2 upload error", err);
+    return new Response("Internal error", { status: 500 });
+  }
+}
+
+export async function PUT(req: Request) {
+  try {
+    const formData = await req.formData();
+
+    const id = (formData.get("id") ?? "").toString();
+    if (!id) {
+      return new Response("Missing id", { status: 400 });
+    }
+
+    const artist = (formData.get("artist") ?? "").toString();
+    const title = (formData.get("title") ?? "").toString();
+    const style = (formData.get("style") ?? "").toString();
+    const technique = (formData.get("technique") ?? "").toString();
+    const widthCm = (formData.get("widthCm") ?? "").toString();
+    const heightCm = (formData.get("heightCm") ?? "").toString();
+    const price = (formData.get("price") ?? "").toString();
+
+    const { env } = getRequestContext() as { env: Env };
+    const bucket = env.ARTWORKS;
+    if (!bucket) {
+      return new Response("R2 bucket binding ARTWORKS is not configured", {
+        status: 500,
+      });
+    }
+
+    let bytes: Uint8Array | null = null;
+
+    const maybeFile = formData.get("file");
+    if (maybeFile instanceof File) {
+      const arrayBuffer = await maybeFile.arrayBuffer();
+      bytes = new Uint8Array(arrayBuffer);
+    } else {
+      const existing = await bucket.get(id);
+      if (!existing) {
+        return new Response("Artwork not found", { status: 404 });
+      }
+      const arrayBuffer = await existing.arrayBuffer();
+      bytes = new Uint8Array(arrayBuffer);
+    }
+
+    await bucket.put(id, bytes, {
+      httpMetadata: {
+        contentType: "image/webp",
+      },
+      customMetadata: {
+        artist,
+        title,
+        style,
+        technique,
+        widthCm,
+        heightCm,
+        price,
+      },
+    });
+
+    const publicUrl = `/api/artwork/image?key=${encodeURIComponent(id)}`;
+
+    return new Response(JSON.stringify({ key: id, publicUrl }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (err) {
+    console.error("R2 update error", err);
+    return new Response("Internal error", { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const id = url.searchParams.get("id");
+    if (!id) {
+      return new Response("Missing id", { status: 400 });
+    }
+
+    const { env } = getRequestContext() as { env: Env };
+    const bucket = env.ARTWORKS;
+    if (!bucket) {
+      return new Response("R2 bucket binding ARTWORKS is not configured", {
+        status: 500,
+      });
+    }
+
+    if (!id.startsWith("artworks/")) {
+      return new Response("Invalid key", { status: 400 });
+    }
+
+    await bucket.delete(id);
+
+    return new Response("Deleted", { status: 200 });
+  } catch (err) {
+    console.error("R2 delete error", err);
     return new Response("Internal error", { status: 500 });
   }
 }
