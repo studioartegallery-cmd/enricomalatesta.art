@@ -1,12 +1,22 @@
+
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 
 const R2_BASE = process.env.NEXT_PUBLIC_R2_BASE || "";
 const TERMS_URL = R2_BASE ? `${R2_BASE}/admin/terms.pdf` : "#";
 const PRIVACY_URL = R2_BASE ? `${R2_BASE}/admin/privacy.pdf` : "#";
 
+// About image is always stored at this fixed key in the R2 bucket.
+const ABOUT_IMAGE_URL = "/api/artwork/image?key=admin/about-bio.webp";
+
 export default function AboutPage() {
+  const [showFallback, setShowFallback] = useState(false);
+
+  // Cache-busting param so we always see the latest image version.
+  const [imageSrc] = useState(() => `${ABOUT_IMAGE_URL}&t=${Date.now()}`);
+
   return (
     <div className="page">
       <header className="header">
@@ -14,58 +24,43 @@ export default function AboutPage() {
       </header>
 
       <main className="main">
-        <section className="grid-wrapper">
-          <article className="art-card">
-            <div className="art-meta">
-              <div className="art-title">About Enrico Malatesta</div>
-              <div className="art-details">
-                Enrico Malatesta (b. 1953) is a visual and digital artist who works primarily with
-                acrylic on canvas, wooden panels, and hybrid digital compositions. His practice
-                bridges traditional studio painting with contemporary digital experimentation,
-                often translating virtual studies into physical works and vice versa.
-              </div>
-              <div className="art-details" style={{ marginTop: "8px" }}>
-                After formative studies at the Académie des Beaux-Arts de Boitsfort in Brussels in
-                the 1970s, Enrico developed a personal language rooted in geometry, colour fields,
-                and layered surfaces. He currently lives and works between Europe and Asia, building
-                an evolving body of work that moves between abstraction, narrative fragments, and
-                architectural rhythms.
-              </div>
-              <div className="art-details" style={{ marginTop: "12px" }}>
-                For enquiries, commissions, or exhibition opportunities you can reach him directly:
-              </div>
-              <div className="art-details" style={{ marginTop: "4px" }}>
-                Email:{" "}
-                <a
-                  href="mailto:enricomalatesta53@gmail.com"
-                  style={{ color: "#fbbf24" }}
-                >
-                  enricomalatesta53@gmail.com
-                </a>
-              </div>
-              <div className="art-details">
-                Instagram:{" "}
-                <a
-                  href="https://www.instagram.com/enricomalatesta7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "#fbbf24" }}
-                >
-                  @enricomalatesta7
-                </a>
-              </div>
-              <div className="art-details" style={{ marginTop: "16px" }}>
-                <Link href="/" style={{ color: "#fbbf24", textDecoration: "none" }}>
-                  ← Back to Home
-                </Link>
+        <section className="text-section about-section">
+
+
+          {!showFallback ? (
+            <div className="admin-preview">
+              <div className="admin-preview-inner">
+                <img
+                src={imageSrc}
+                alt="About Enrico Malatesta"
+                className="about-bio-image"
+                onError={() => setShowFallback(true)}
+                />
               </div>
             </div>
-          </article>
+          ) : (
+            <>
+              <p className="section-text">
+                Enrico Malatesta is a visual and digital artist working between
+                acrylic painting and contemporary mixed media. His practice moves
+                freely between precise geometric structures and more intuitive,
+                gestural compositions, often combining traditional techniques
+                with digital experimentation.
+              </p>
+              <p className="section-text">
+                This page will later be replaced by a designed bio image managed
+                from the admin area. Until then, this text acts as a permanent
+                fallback so the About section always stays readable, even if no
+                image has been uploaded yet.
+              </p>
+            </>
+          )}
         </section>
       </main>
 
       <footer className="footer">
         <nav className="footer-nav">
+          <a href="/">Home</a>
           <a href="/about">About</a>
           <a href={TERMS_URL} download>
             Terms

@@ -208,6 +208,15 @@ body {
   margin-top: 8px;
 }
 
+.about-bio-image {
+  display: block;
+  width: 100%;
+  max-width: 1200px;      /* increase/decrease to taste */
+  height: auto;
+  border-radius: 16px;
+  margin: 0 auto;         /* center the image */
+}
+
 /* Buy button */
 
 .buy-button {

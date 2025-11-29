@@ -21,6 +21,14 @@ type R2Object = {
 
 export async function GET(request: Request) {
   try {
+    const env = getRequestContext().env as Env;
+    const bucket = env.ARTWORKS;
+
+    if (!bucket) {
+      console.error("R2 bucket binding ARTWORKS is missing");
+      return new Response("R2 bucket not configured", { status: 500 });
+    }
+
     const url = new URL(request.url);
     const key = url.searchParams.get("key");
 
@@ -28,24 +36,26 @@ export async function GET(request: Request) {
       return new Response("Missing key", { status: 400 });
     }
 
-    const { env } = getRequestContext() as { env: Env };
-    const bucket = env.ARTWORKS;
-    if (!bucket) {
-      return new Response("ARTWORKS bucket not configured", { status: 500 });
-    }
-
     const object = await bucket.get(key);
+
     if (!object) {
       return new Response("Not found", { status: 404 });
     }
 
     const contentType = object.httpMetadata?.contentType || "image/webp";
 
+    // For admin assets (like the About bio), we disable caching so updates appear immediately.
+    // For artwork images, we keep a long cache.
+    let cacheControl = "public, max-age=31536000, immutable";
+    if (key.startsWith("admin/")) {
+      cacheControl = "no-store";
+    }
+
     return new Response(object.body, {
       status: 200,
       headers: {
         "Content-Type": contentType,
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": cacheControl,
       },
     });
   } catch (err) {
