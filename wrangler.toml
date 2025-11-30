@@ -11,3 +11,8 @@ pages_build_output_dir = ".vercel/output/static"
 binding = "ARTWORKS"
 bucket_name = "emart"  # R2 bucket name
 
+[[d1_databases]]
+binding = "DB"              # this is what env.DB reads
+database_name = "emart"     # your DB name in Cloudflare
+database_id = "84ba6bea-4a0f-4adf-ada5-bd9d0722f45d"
+account_id = "53548717cdc43180784e17961582a067"
