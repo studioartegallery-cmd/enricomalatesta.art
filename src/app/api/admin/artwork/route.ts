@@ -55,6 +55,9 @@ type Artwork = {
   technique: string;
   widthCm: string;
   heightCm: string;
+  creationDate: string;
+  sold: string;
+  buyUrl: string;
 };
 
 function slugify(input: string): string {
@@ -92,52 +95,72 @@ export async function GET() {
     // Only keep real .webp image objects; ignore folder markers or other junk keys
     const imageObjects = list.objects.filter((obj) => /\.webp$/i.test(obj.key));
 
-    const items: Artwork[] = imageObjects.map((obj) => {
-      const meta = obj.customMetadata || {};
+    
+const items: Artwork[] = imageObjects.map((obj) => {
+  const meta = obj.customMetadata || {};
 
-      const artist = meta.artist || "";
-      const style = meta.style || "";
-      const technique = meta.technique || "";
-      const width = meta.widthCm || "";
-      const height = meta.heightCm || "";
-      const price = meta.price || "";
+  const artist = meta.artist || "";
+  const style = meta.style || "";
+  const technique = meta.technique || "";
+  const width = meta.widthCm || "";
+  const height = meta.heightCm || "";
+  const price = meta.price || "";
+  const creationDate = meta.creationDate || "";
+  const sold = meta.sold || "";
+  const buyUrl = meta.buyUrl || "";
 
-      const fallbackFromKey = titleFromKey(obj.key);
-      const title =
-      (meta.title && meta.title.trim()) ||
-      (style && style.trim()) ||
-      fallbackFromKey;
+  const fallbackFromKey = titleFromKey(obj.key);
+  const title =
+    (meta.title && meta.title.trim()) ||
+    (style && style.trim()) ||
+    fallbackFromKey;
 
-      const subtitleParts: string[] = [];
-      if (style) subtitleParts.push(style);
-      if (technique) subtitleParts.push(technique);
-      if (width && height) subtitleParts.push(`${width} × ${height} cm`);
-      const subtitle = subtitleParts.join(" · ");
+  const subtitleParts: string[] = [];
+  if (style) subtitleParts.push(style);
+  if (technique) subtitleParts.push(technique);
+  if (width && height) subtitleParts.push(`${width} × ${height} cm`);
+  const subtitle = subtitleParts.join(" · ");
 
-      let type: Filter = "paintings";
-      const kind = `${style} ${technique}`.toLowerCase();
-      if (kind.includes("digital")) {
-        type = "digital";
-      }
+  let type: Filter = "paintings";
+  const kind = `${style} ${technique}`.toLowerCase();
+  if (kind.includes("digital")) {
+    type = "digital";
+  }
 
-      return {
-        id: obj.key,
-        title,
-        subtitle,
-        type,
-        price: price || "",
-        imageUrl: `/api/artwork/image?key=${encodeURIComponent(obj.key)}`,
-                                              artist,
-                                              style,
-                                              technique,
-                                              widthCm: width,
-                                              heightCm: height,
-      };
-    });
+  return {
+    id: obj.key,
+    title,
+    subtitle,
+    type,
+    price: price || "",
+    imageUrl: `/api/artwork/image?key=${encodeURIComponent(obj.key)}`,
+    artist,
+    style,
+    technique,
+    widthCm: width,
+    heightCm: height,
+    creationDate,
+    sold,
+    buyUrl,
+  };
+});
 
-    items.sort((a, b) => (a.id < b.id ? 1 : -1));
+items.sort((a, b) => {
+  const aDate = a.creationDate || "";
+  const bDate = b.creationDate || "";
 
-    return new Response(JSON.stringify(items), {
+  if (aDate && bDate && aDate !== bDate) {
+    // Newest first
+    return aDate < bDate ? 1 : -1;
+  }
+
+  if (aDate && !bDate) return -1;
+  if (!aDate && bDate) return 1;
+
+  return a.id < b.id ? 1 : -1;
+});
+
+return new Response(JSON.stringify(items), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
@@ -165,6 +188,15 @@ export async function POST(req: Request) {
     const widthCm = (formData.get("widthCm") ?? "").toString();
     const heightCm = (formData.get("heightCm") ?? "").toString();
     const price = (formData.get("price") ?? "").toString();
+    let creationDate = (formData.get("creationDate") ?? "").toString();
+    const sold = (formData.get("sold") ?? "").toString();
+    const buyUrl = (formData.get("buyUrl") ?? "").toString();
+
+    if (!creationDate) {
+      const now = new Date();
+      creationDate = now.toISOString().slice(0, 10);
+    }
+
 
     const arrayBuffer = await file.arrayBuffer();
     const bytes = new Uint8Array(arrayBuffer);
@@ -196,6 +228,9 @@ export async function POST(req: Request) {
         widthCm,
         heightCm,
         price,
+        creationDate,
+        sold,
+        buyUrl,
       },
     });
 
@@ -229,6 +264,15 @@ export async function PUT(req: Request) {
     const widthCm = (formData.get("widthCm") ?? "").toString();
     const heightCm = (formData.get("heightCm") ?? "").toString();
     const price = (formData.get("price") ?? "").toString();
+    let creationDate = (formData.get("creationDate") ?? "").toString();
+    const sold = (formData.get("sold") ?? "").toString();
+    const buyUrl = (formData.get("buyUrl") ?? "").toString();
+
+    if (!creationDate) {
+      const now = new Date();
+      creationDate = now.toISOString().slice(0, 10);
+    }
+
 
     const { env } = getRequestContext() as { env: Env };
     const bucket = env.ARTWORKS;
@@ -265,6 +309,9 @@ export async function PUT(req: Request) {
         widthCm,
         heightCm,
         price,
+        creationDate,
+        sold,
+        buyUrl,
       },
     });
 

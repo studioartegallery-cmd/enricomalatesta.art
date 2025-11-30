@@ -48,6 +48,9 @@ type ArtworkForm = {
   widthCm: string;
   heightCm: string;
   price: string;
+  creationDate: string;
+  sold: boolean;
+  buyUrl: string;
 };
 
 type Filter = "all" | "paintings" | "digital";
@@ -64,6 +67,9 @@ type ExistingArtwork = {
   technique?: string;
   widthCm?: string;
   heightCm?: string;
+  creationDate?: string;
+  sold?: string;
+  buyUrl?: string;
 };
 
 function dataUrlToBlob(dataUrl: string): Blob {
@@ -96,6 +102,9 @@ export default function AdminArtworkPage() {
     widthCm: "",
     heightCm: "",
     price: "",
+    creationDate: "",
+    sold: false,
+    buyUrl: "",
   });
 
   const [existing, setExisting] = useState<ExistingArtwork[]>([]);
@@ -172,12 +181,15 @@ export default function AdminArtworkPage() {
     setSelectedId(a.id);
     setForm({
       artist: (a.artist && a.artist.trim()) || "Enrico Malatesta",
-            title: a.title || "",
-            style: ((a.style || "Abstract") as Style),
-            technique: ((a.technique || "Acrylic on canvas") as Technique),
-            widthCm: a.widthCm || "",
-            heightCm: a.heightCm || "",
-            price: a.price || "",
+      title: a.title || "",
+      style: ((a.style || "Abstract") as Style),
+      technique: ((a.technique || "Acrylic on canvas") as Technique),
+      widthCm: a.widthCm || "",
+      heightCm: a.heightCm || "",
+      price: a.price || "",
+      creationDate: a.creationDate || "",
+      sold: a.sold === "1" || a.sold === "true",
+      buyUrl: a.buyUrl || "",
     });
     setWebpDataUrl(a.imageUrl || null);
     setFile(null);
@@ -201,6 +213,9 @@ export default function AdminArtworkPage() {
     fd.append("widthCm", form.widthCm);
     fd.append("heightCm", form.heightCm);
     fd.append("price", form.price);
+    fd.append("creationDate", form.creationDate);
+    fd.append("sold", form.sold ? "1" : "0");
+    fd.append("buyUrl", form.buyUrl);
 
     let method: "POST" | "PUT" = "POST";
 
@@ -286,6 +301,9 @@ export default function AdminArtworkPage() {
           widthCm: "",
           heightCm: "",
           price: "",
+          creationDate: "",
+          sold: false,
+          buyUrl: "",
         });
         setWebpDataUrl(null);
         setFile(null);
@@ -451,6 +469,38 @@ export default function AdminArtworkPage() {
     Display format suggestion: €{pricePreview} / ${pricePreview}.
     </p>
     </label>
+
+    <label className="admin-field admin-field-date">
+    <span>Creation Date</span>
+    <input
+      type="date"
+      value={form.creationDate}
+      onChange={(e) => handleChange("creationDate", e.target.value)}
+    />
+    </label>
+
+    <label className="admin-field admin-field-inline">
+    <span>Sold</span>
+    <input
+      type="checkbox"
+      checked={form.sold}
+      onChange={(e) => handleChange("sold", e.target.checked)}
+    />
+    </label>
+
+    <label className="admin-field">
+    <span>Buy URL (optional)</span>
+    <input
+      type="text"
+      value={form.buyUrl}
+      onChange={(e) => handleChange("buyUrl", e.target.value)}
+      placeholder="https://studioarte.art"
+    />
+    <p className="admin-note">
+      If empty, the Buy button links to studioarte.art.
+    </p>
+    </label>
+
 
     <button type="submit" className="buy-button" disabled={isSaving}>
     {isSaving ? "Saving…" : "Save artwork to R2"}

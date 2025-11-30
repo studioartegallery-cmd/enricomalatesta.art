@@ -52,11 +52,16 @@ export default function BlogPage() {
     <h1 className="site-title">MalatestaArt</h1>
     </header>
 
+    <nav className="top-links">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    </nav>
+
     <main className="main">
     <section className="text-section">
-    <h2 className="section-title" style={{ textAlign: "center" }}>Blog</h2>
-    <p className="section-text">
-    Short notes, stories and updates about new artworks, exhibitions and experiments.
+    <h2 className="section-title" style={{ textAlign: "center", marginBottom: "1rem" }}>Blog</h2>
+    <p className="section-text" style={{ textAlign: "center" }}  >
+    Short notes, stories and updates about new artworks and experiments.
     </p>
     </section>
 

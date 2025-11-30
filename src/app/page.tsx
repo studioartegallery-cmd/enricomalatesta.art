@@ -11,6 +11,9 @@ type Artwork = {
   type: Filter;
   price: string;
   imageUrl?: string;
+  creationDate?: string;
+  sold?: string;
+  buyUrl?: string;
 };
 
 const R2_BASE = process.env.NEXT_PUBLIC_R2_BASE || "";
@@ -55,6 +58,11 @@ export default function HomePage() {
     <h1 className="site-title">MalatestaArt</h1>
     </header>
 
+    <nav className="top-links">
+    <a href="/about">About</a>
+    <a href="/blog">Blog</a>
+    </nav>
+
     <main className="main">
     <div className="filters">
     <button
@@ -93,12 +101,12 @@ export default function HomePage() {
       <div className="art-footer">
       <span className="art-price">€/$ {art.price}</span>
       <a
-      href="https://studioarte.art"
+      href={art.buyUrl && art.buyUrl.trim() ? art.buyUrl : "https://studioarte.art"}
       target="_blank"
       rel="noopener noreferrer"
       className="buy-button"
       >
-      Buy
+      {art.sold === "1" || art.sold === "true" ? "Sold" : "Buy"}
       </a>
       </div>
       </div>

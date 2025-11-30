@@ -392,6 +392,24 @@ body {
   border-color: #fbbf24;
 }
 
+
+.admin-field-date input[type="date"] {
+  max-width: 260px;
+}
+
+.admin-field-inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-field-inline span {
+  min-width: 80px;
+}
+
+.admin-field-inline input[type="checkbox"] {
+  width: auto;
+}
 .admin-size-fields,
 .admin-price-fields {
   margin-top: 16px;
