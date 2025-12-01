@@ -94,8 +94,20 @@ export default function BlogPage() {
         return (
           <div key={post.id} className="art-block">
           <div className={`art-image ${imageUrl ? "" : "placeholder"}`}>
-          {imageUrl && <img src={imageUrl} alt={post.title} />}
+          {imageUrl && (
+            <img
+            src={imageUrl}
+            alt={post.title}
+            style={{
+              width: "80%",        // half the card width
+              height: "auto",
+              display: "block",
+              margin: "0 auto",    // center it
+            }}
+            />
+          )}
           </div>
+
           <div className="art-meta">
           <div className="art-title">{post.title}</div>
           {dateText && <div className="art-details">Posted on {dateText}</div>}

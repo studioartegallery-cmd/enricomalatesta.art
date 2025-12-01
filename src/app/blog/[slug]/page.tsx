@@ -111,7 +111,7 @@ export default function BlogDetailPage() {
       className="blog-post-card"
       style={{
         width: '100%',
-        maxWidth: '800px', // about 1/3 narrower than the main width
+        maxWidth: '800px',
         margin: '0 auto',
         padding: '24px 22px 28px',
         borderRadius: '18px',
@@ -125,17 +125,28 @@ export default function BlogDetailPage() {
       <p className="section-text meta-text">
       {dateText && <span className="meta-item">{dateText}</span>}
       </p>
+
+      {/* Image floated left with text wrapping */}
       {imageUrl && (
-        <div className="blog-image-wrapper">
         <img
         src={imageUrl}
         alt={post.title}
-        className="blog-image"
         loading="lazy"
+        style={{
+          width: '45%',          // fixed width, looks balanced
+          height: 'auto',
+          borderRadius: '14px',
+          display: 'block',
+          float: 'left',
+          marginTop: '18px',       // drops the image a bit below title/date
+          marginRight: '20px',     // space between image and text
+          marginBottom: '18px',
+        }}
         />
-        </div>
       )}
+
       <p className="section-text excerpt-text">{post.excerpt}</p>
+
       {post.body && (
         <div className="section-text blog-body">
         {post.body.split('\n').map((para, idx) => (
@@ -143,6 +154,9 @@ export default function BlogDetailPage() {
         ))}
         </div>
       )}
+
+      {/* Clear float so nothing below gets pulled up */}
+      <div style={{ clear: 'both' }} />
       </div>
       </section>
     )}
@@ -160,7 +174,7 @@ export default function BlogDetailPage() {
       onClick={() => {
         document.cookie =
         'emart_cookie_consent=accepted; max-age=31536000; path=/';
-        setHasConsent(true);
+      setHasConsent(true);
       }}
       >
       Accept
@@ -170,7 +184,7 @@ export default function BlogDetailPage() {
       onClick={() => {
         document.cookie =
         'emart_cookie_consent=declined; max-age=31536000; path=/';
-        setHasConsent(true);
+      setHasConsent(true);
       }}
       >
       Decline
