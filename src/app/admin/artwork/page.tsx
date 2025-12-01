@@ -541,22 +541,14 @@ export default function AdminArtworkPage() {
     </ul>
     </section>
 
-    <div className="admin-back-row">
-    <Link href="/" className="buy-button">
-    ← Back to Home
-    </Link>
-    <Link href="/admin" className="buy-button">
-    ← Back to Admin
-    </Link>
-    </div>
+
     </main>
 
     <footer className="footer">
-    <div className="footer-copy">&copy; {new Date().getFullYear()} MalatestaArt</div>
     <nav className="footer-nav">
+    <a href="/admin">Admin</a>
+    <a href="/">Home</a>
     <a href="/about">About</a>
-    <a href="#">Terms</a>
-    <a href="#">Privacy</a>
     <a href="/blog">Blog</a>
     </nav>
     </footer>

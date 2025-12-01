@@ -84,15 +84,11 @@ export default function AdminPage() {
       </main>
 
       <footer className="footer">
-        <div className="footer-copy">&copy; {new Date().getFullYear()} MalatestaArt</div>
+
         <nav className="footer-nav">
+          <a href="/">Home</a>
           <a href="/about">About</a>
-          <a href={TERMS_URL} download>
-            Terms
-          </a>
-          <a href={PRIVACY_URL} download>
-            Privacy
-          </a>
+
           <a
             href="#"
             onClick={(e) => {

@@ -116,15 +116,13 @@ export default function BlogPage() {
     </main>
 
     <footer className="footer">
+    <div className="footer-copy">&copy; {new Date().getFullYear()} Enrico Malatesta</div>
     <nav className="footer-nav">
     <a href="/">Home</a>
     <a href="/about">About</a>
-    <a href={TERMS_URL} download>
-    Terms
-    </a>
-    <a href={PRIVACY_URL} download>
-    Privacy
-    </a>
+    <a href={TERMS_URL} target="_blank" rel="noopener noreferrer">Terms</a>
+    <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">Privacy</a>
+
     <a
     href="#"
     onClick={(e) => {

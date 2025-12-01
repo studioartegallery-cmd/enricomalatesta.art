@@ -120,167 +120,157 @@ export default function AdminBlogPage() {
 
   return (
     <div className="page">
-      <header className="header">
-        <h1 className="site-title">MalatestaArt</h1>
-      </header>
+    <header className="header">
+    <h1 className="site-title">MalatestaArt</h1>
+    </header>
 
-      <main className="main">
-        <section className="text-section">
-          <h2 className="section-title">Admin &ndash; Blog</h2>
-          <p className="section-text">
-            Create and manage blog posts that appear on the public Blog page. The most recent
-            published post will always appear first.
-          </p>
-        </section>
+    <main className="main">
+    <section className="text-section">
+    <h2 className="section-title">Admin &ndash; Blog</h2>
+    <p className="section-text">
+    Create and manage blog posts that appear on the public Blog page. The most recent
+    published post will always appear first.
+    </p>
+    </section>
 
-        <section className="admin-grid">
-          {/* Left: form */}
-          <div className="admin-panel">
-            <h3 className="admin-panel-title">1. New blog post</h3>
-            <p className="admin-note">
-              Fill in the fields below. The image is optional but recommended.
-            </p>
+    <section className="admin-grid">
+    {/* Left: form */}
+    <div className="admin-panel">
+    <h3 className="admin-panel-title">1. New blog post</h3>
+    <p className="admin-note">
+    Fill in the fields below. The image is optional but recommended.
+    </p>
 
-            <form className="admin-form" onSubmit={handleSubmit}>
-              <div className="admin-field">
-                <span>Title</span>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-              </div>
+    <form className="admin-form" onSubmit={handleSubmit}>
+    <div className="admin-field">
+    <span>Title</span>
+    <input
+    type="text"
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
+    required
+    />
+    </div>
 
-              <div className="admin-field">
-                <span>Excerpt (short intro)</span>
-                <textarea
-                  value={excerpt}
-                  onChange={(e) => setExcerpt(e.target.value)}
-                  rows={3}
-                  style={{ resize: "vertical" }}
-                  required
-                />
-              </div>
+    <div className="admin-field">
+    <span>Excerpt (short intro)</span>
+    <textarea
+    value={excerpt}
+    onChange={(e) => setExcerpt(e.target.value)}
+    rows={3}
+    style={{ resize: "vertical" }}
+    required
+    />
+    </div>
 
-              <div className="admin-field">
-                <span>Body (optional full text)</span>
-                <textarea
-                  value={body}
-                  onChange={(e) => setBody(e.target.value)}
-                  rows={6}
-                  style={{ resize: "vertical" }}
-                  placeholder="You can leave this empty if you only want a short excerpt."
-                />
-              </div>
+    <div className="admin-field">
+    <span>Body (optional full text)</span>
+    <textarea
+    value={body}
+    onChange={(e) => setBody(e.target.value)}
+    rows={6}
+    style={{ resize: "vertical" }}
+    placeholder="You can leave this empty if you only want a short excerpt."
+    />
+    </div>
 
-              <div className="admin-field">
-                <span>Image (optional)</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="file-input"
-                  onChange={handleImageChange}
-                />
-              </div>
+    <div className="admin-field">
+    <span>Image (optional)</span>
+    <input
+    type="file"
+    accept="image/*"
+    className="file-input"
+    onChange={handleImageChange}
+    />
+    </div>
 
-              <div className="admin-field">
-                <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  <input
-                    type="checkbox"
-                    checked={published}
-                    onChange={(e) => setPublished(e.target.checked)}
-                  />
-                  <span>Published</span>
-                </label>
-              </div>
+    <div className="admin-field">
+    <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+    <input
+    type="checkbox"
+    checked={published}
+    onChange={(e) => setPublished(e.target.checked)}
+    />
+    <span>Published</span>
+    </label>
+    </div>
 
-              <button type="submit" className="buy-button" disabled={isSaving}>
-                {isSaving ? "Saving…" : "Save blog post"}
-              </button>
-            </form>
-          </div>
+    <button type="submit" className="buy-button" disabled={isSaving}>
+    {isSaving ? "Saving…" : "Save blog post"}
+    </button>
+    </form>
+    </div>
 
-          {/* Right: preview */}
-          <div className="admin-panel">
-            <h3 className="admin-panel-title">2. Preview image</h3>
-            <div className="admin-preview">
-              {imagePreview ? (
-                <img src={imagePreview} alt="Preview" className="admin-preview-image" />
-              ) : (
-                <div className="admin-preview-placeholder">
-                  Select an image file to see a preview here.
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
+    {/* Right: preview */}
+    <div className="admin-panel">
+    <h3 className="admin-panel-title">2. Preview image</h3>
+    <div className="admin-preview">
+    {imagePreview ? (
+      <img src={imagePreview} alt="Preview" className="admin-preview-image" />
+    ) : (
+      <div className="admin-preview-placeholder">
+      Select an image file to see a preview here.
+      </div>
+    )}
+    </div>
+    </div>
+    </section>
 
-        {/* Existing posts */}
-        <section className="admin-existing">
-          <h3 className="admin-panel-title">3. Existing posts</h3>
-          <p className="admin-note">
-            The list is ordered from newest to oldest based on the creation date.
-          </p>
+    {/* Existing posts */}
+    <section className="admin-existing">
+    <h3 className="admin-panel-title">3. Existing posts</h3>
+    <p className="admin-note">
+    The list is ordered from newest to oldest based on the creation date.
+    </p>
 
-          {isLoading ? (
-            <p className="admin-note">Loading…</p>
-          ) : posts.length === 0 ? (
-            <p className="admin-note">No blog posts yet.</p>
-          ) : (
-            <ul className="admin-existing-list">
-              {posts.map((post) => (
-                <li key={post.id} className="admin-existing-item">
-                  <button type="button" className="admin-existing-button">
-                    {post.title}
-                    {post.published ? "" : " (draft)"}
-                  </button>
-                  <button
-                    type="button"
-                    className="admin-delete-button"
-                    onClick={() => handleDelete(post.id)}
-                  >
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+    {isLoading ? (
+      <p className="admin-note">Loading…</p>
+    ) : posts.length === 0 ? (
+      <p className="admin-note">No blog posts yet.</p>
+    ) : (
+      <ul className="admin-existing-list">
+      {posts.map((post) => (
+        <li key={post.id} className="admin-existing-item">
+        <button type="button" className="admin-existing-button">
+        {post.title}
+        {post.published ? "" : " (draft)"}
+        </button>
+        <button
+        type="button"
+        className="admin-delete-button"
+        onClick={() => handleDelete(post.id)}
+        >
+        Delete
+        </button>
+        </li>
+      ))}
+      </ul>
+    )}
+    </section>
 
-        <div className="admin-back-row">
-          <Link href="/" className="buy-button">
-            ← Back to Home
-          </Link>
-          <Link href="/admin" className="buy-button">
-            ← Back to Admin
-          </Link>
-        </div>
-      </main>
 
-      <footer className="footer">
-        <div className="footer-copy">&copy; {new Date().getFullYear()} Enrico Malatesta</div>
-        <nav className="footer-links">
-          <a href={TERMS_URL} target="_blank" rel="noreferrer">
-            Terms
-          </a>
-          <a href={PRIVACY_URL} target="_blank" rel="noreferrer">
-            Privacy
-          </a>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              document.cookie =
-                "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-              window.location.reload();
-            }}
-          >
-            Cookies
-          </a>
-          <a href="/blog">Blog</a>
-        </nav>
-      </footer>
+    </main>
+
+    <footer className="footer">
+    <nav className="footer-nav">
+    <a href="/admin">Admin</a>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+
+    <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      document.cookie =
+      "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+    window.location.reload();
+    }}
+    >
+    Cookies
+    </a>
+    <a href="/blog">Blog</a>
+    </nav>
+    </footer>
     </div>
   );
 }

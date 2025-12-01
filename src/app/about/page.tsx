@@ -23,6 +23,12 @@ export default function AboutPage() {
         <h1 className="site-title">MalatestaArt</h1>
       </header>
 
+      <nav className="top-links">
+      <a href="/">Home</a>
+      <a href="/blog">Blog</a>
+
+      </nav>
+
       <main className="main">
         <section className="text-section about-section">
 
@@ -59,15 +65,13 @@ export default function AboutPage() {
       </main>
 
       <footer className="footer">
+       <div className="footer-copy">&copy; {new Date().getFullYear()} Enrico Malatesta</div>
         <nav className="footer-nav">
           <a href="/">Home</a>
           <a href="/about">About</a>
-          <a href={TERMS_URL} download>
-            Terms
-          </a>
-          <a href={PRIVACY_URL} download>
-            Privacy
-          </a>
+          <a href={TERMS_URL} target="_blank" rel="noopener noreferrer">Terms</a>
+          <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">Privacy</a>
+
           <a
             href="#"
             onClick={(e) => {

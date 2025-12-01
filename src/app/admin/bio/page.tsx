@@ -143,27 +143,15 @@ export default function AdminBioPage() {
             </div>
           </div>
 
-          <div className="admin-buttons">
-            <Link href="/" className="back-button">
-              ← Back to Home
-            </Link>
-            <Link href="/admin" className="back-button">
-              ← Back to Admin
-            </Link>
-          </div>
+
         </section>
       </main>
 
       <footer className="footer">
         <nav className="footer-nav">
+          <a href="/admin">Admin</a>
           <a href="/">Home</a>
           <a href="/about">About</a>
-          <a href={TERMS_URL} download>
-            Terms
-          </a>
-          <a href={PRIVACY_URL} download>
-            Privacy
-          </a>
           <a
             href="#"
             onClick={(e) => {
