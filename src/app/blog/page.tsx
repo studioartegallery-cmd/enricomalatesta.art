@@ -93,20 +93,30 @@ export default function BlogPage() {
         : "";
         return (
           <div key={post.id} className="art-block">
-          <div className={`art-image ${imageUrl ? "" : "placeholder"}`}>
-          {imageUrl && (
+          {imageUrl ? (
+            <div
+            style={{
+              padding: "1rem 0",
+              display: "flex",
+              justifyContent: "center",
+            }}
+            >
             <img
             src={imageUrl}
             alt={post.title}
             style={{
-              width: "80%",        // half the card width
+              width: "80%",
               height: "auto",
               display: "block",
-              margin: "0 auto",    // center it
+              borderRadius: "14px",
             }}
             />
+            </div>
+          ) : (
+            <div className="art-image placeholder" />
           )}
-          </div>
+
+
 
           <div className="art-meta">
           <div className="art-title">{post.title}</div>

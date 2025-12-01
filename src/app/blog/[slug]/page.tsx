@@ -32,18 +32,7 @@ export default function BlogDetailPage() {
 
   const [post, setPost] = useState<BlogPost | null>(null);
   const [notFound, setNotFound] = useState(false);
-  const [hasConsent, setHasConsent] = useState(false);
 
-  useEffect(() => {
-    const consentCookie = document.cookie
-    .split(';')
-    .map((c) => c.trim())
-    .find((c) => c.startsWith('emart_cookie_consent='));
-
-    if (consentCookie?.includes('accepted')) {
-      setHasConsent(true);
-    }
-  }, []);
 
   useEffect(() => {
     if (!slug) return;
@@ -162,36 +151,7 @@ export default function BlogDetailPage() {
     )}
     </main>
 
-    {!hasConsent && (
-      <div className="cookie-banner">
-      <p className="cookie-text">
-      This site uses cookies only for essential functionality. No tracking
-      or analytics are used.
-      </p>
-      <div className="cookie-buttons">
-      <button
-      className="buy-button"
-      onClick={() => {
-        document.cookie =
-        'emart_cookie_consent=accepted; max-age=31536000; path=/';
-      setHasConsent(true);
-      }}
-      >
-      Accept
-      </button>
-      <button
-      className="buy-button secondary"
-      onClick={() => {
-        document.cookie =
-        'emart_cookie_consent=declined; max-age=31536000; path=/';
-      setHasConsent(true);
-      }}
-      >
-      Decline
-      </button>
-      </div>
-      </div>
-    )}
+
 
     <footer className="footer">
     <div className="footer-copy">
