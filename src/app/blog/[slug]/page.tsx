@@ -36,9 +36,9 @@ export default function BlogDetailPage() {
 
   useEffect(() => {
     const consentCookie = document.cookie
-      .split(';')
-      .map((c) => c.trim())
-      .find((c) => c.startsWith('emart_cookie_consent='));
+    .split(';')
+    .map((c) => c.trim())
+    .find((c) => c.startsWith('emart_cookie_consent='));
 
     if (consentCookie?.includes('accepted')) {
       setHasConsent(true);
@@ -75,125 +75,137 @@ export default function BlogDetailPage() {
 
   const imageUrl = getImageUrl(post?.imageKey ?? null);
   const dateText = post?.createdAt
-    ? new Date(post.createdAt).toLocaleDateString()
-    : '';
+  ? new Date(post.createdAt).toLocaleDateString()
+  : '';
 
   return (
     <div className="page">
-      <header className="header">
-        <h1 className="site-title">MalatestaArt</h1>
-      </header>
+    <header className="header">
+    <h1 className="site-title">MalatestaArt</h1>
+    </header>
 
-      <main className="main">
-        {notFound ? (
-          <section className="text-section">
-            <h2 className="section-title">Post not found</h2>
-            <p className="section-text">
-              This blog post does not exist or is not published anymore.
-            </p>
-            <div className="admin-back-row">
-              <Link href="/blog" className="buy-button">
-                ← Back to Blog
-              </Link>
-              <Link href="/" className="buy-button">
-                ← Back to Home
-              </Link>
-            </div>
-          </section>
-        ) : !post ? (
-          <section className="text-section">
-            <h2 className="section-title">Loading...</h2>
-            <p className="section-text">Please wait while we load the post.</p>
-          </section>
-        ) : (
-          <section className="text-section">
-            <h2 className="section-title">{post.title}</h2>
-            <p className="section-text meta-text">
-              {dateText && <span className="meta-item">{dateText}</span>}
-            </p>
-            {imageUrl && (
-              <div className="blog-image-wrapper">
-                <img
-                  src={imageUrl}
-                  alt={post.title}
-                  className="blog-image"
-                  loading="lazy"
-                />
-              </div>
-            )}
-            <p className="section-text excerpt-text">{post.excerpt}</p>
-            {post.body && (
-              <div className="section-text blog-body">
-                {post.body.split('\n').map((para, idx) => (
-                  <p key={idx}>{para}</p>
-                ))}
-              </div>
-            )}
-            <div className="admin-back-row">
-              <Link href="/blog" className="buy-button">
-                ← Back to Blog
-              </Link>
-              <Link href="/" className="buy-button">
-                ← Back to Home
-              </Link>
-            </div>
-          </section>
-        )}
-      </main>
-
-      {!hasConsent && (
-        <div className="cookie-banner">
-          <p className="cookie-text">
-            This site uses cookies only for essential functionality. No tracking
-            or analytics are used.
-          </p>
-          <div className="cookie-buttons">
-            <button
-              className="buy-button"
-              onClick={() => {
-                document.cookie =
-                  'emart_cookie_consent=accepted; max-age=31536000; path=/';
-                setHasConsent(true);
-              }}
-            >
-              Accept
-            </button>
-            <button
-              className="buy-button secondary"
-              onClick={() => {
-                document.cookie =
-                  'emart_cookie_consent=declined; max-age=31536000; path=/';
-                setHasConsent(true);
-              }}
-            >
-              Decline
-            </button>
-          </div>
+    <main className="main">
+    {notFound ? (
+      <section className="text-section">
+      <h2 className="section-title">Post not found</h2>
+      <p className="section-text">
+      This blog post does not exist or is not published anymore.
+      </p>
+      <div className="admin-back-row">
+      <Link href="/blog" className="buy-button">
+      ← Back to Blog
+      </Link>
+      <Link href="/" className="buy-button">
+      ← Back to Home
+      </Link>
+      </div>
+      </section>
+    ) : !post ? (
+      <section className="text-section">
+      <h2 className="section-title">Loading...</h2>
+      <p className="section-text">Please wait while we load the post.</p>
+      </section>
+    ) : (
+      <section className="text-section">
+      <div
+      className="blog-post-card"
+      style={{
+        width: '100%',
+        maxWidth: '800px', // about 1/3 narrower than the main width
+        margin: '0 auto',
+        padding: '24px 22px 28px',
+        borderRadius: '18px',
+        background:
+        'radial-gradient(circle at top left, rgba(31,41,55,0.96), rgba(15,23,42,0.94))',
+         boxShadow: '0 18px 40px rgba(0,0,0,0.85)',
+         border: '1px solid rgba(148,163,184,0.25)',
+      }}
+      >
+      <h2 className="section-title">{post.title}</h2>
+      <p className="section-text meta-text">
+      {dateText && <span className="meta-item">{dateText}</span>}
+      </p>
+      {imageUrl && (
+        <div className="blog-image-wrapper">
+        <img
+        src={imageUrl}
+        alt={post.title}
+        className="blog-image"
+        loading="lazy"
+        />
         </div>
       )}
+      <p className="section-text excerpt-text">{post.excerpt}</p>
+      {post.body && (
+        <div className="section-text blog-body">
+        {post.body.split('\n').map((para, idx) => (
+          <p key={idx}>{para}</p>
+        ))}
+        </div>
+      )}
+      </div>
+      </section>
+    )}
+    </main>
 
-      <footer className="footer">
-        <nav className="footer-links">
-          <a href={TERMS_URL} target="_blank" rel="noopener noreferrer">
-            Terms
-          </a>
-          <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">
-            Privacy
-          </a>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              document.cookie =
-                'emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
-              window.location.reload();
-            }}
-          >
-            Cookies
-          </a>
-          <a href="/blog">Blog</a>
-        </nav>
-      </footer>
+    {!hasConsent && (
+      <div className="cookie-banner">
+      <p className="cookie-text">
+      This site uses cookies only for essential functionality. No tracking
+      or analytics are used.
+      </p>
+      <div className="cookie-buttons">
+      <button
+      className="buy-button"
+      onClick={() => {
+        document.cookie =
+        'emart_cookie_consent=accepted; max-age=31536000; path=/';
+        setHasConsent(true);
+      }}
+      >
+      Accept
+      </button>
+      <button
+      className="buy-button secondary"
+      onClick={() => {
+        document.cookie =
+        'emart_cookie_consent=declined; max-age=31536000; path=/';
+        setHasConsent(true);
+      }}
+      >
+      Decline
+      </button>
+      </div>
+      </div>
+    )}
+
+    <footer className="footer">
+    <div className="footer-copy">
+    &copy; {new Date().getFullYear()} Enrico Malatesta
+    </div>
+    <nav className="footer-nav">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href={TERMS_URL} target="_blank" rel="noopener noreferrer">
+    Terms
+    </a>
+    <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">
+    Privacy
+    </a>
+    <a
+    href="#"
+    onClick={(e) => {
+      e.preventDefault();
+      document.cookie =
+      'emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+        window.location.reload();
+    }}
+    >
+    Cookies
+    </a>
+    <a href="/blog">Blog</a>
+    </nav>
+    </footer>
     </div>
   );
 }
