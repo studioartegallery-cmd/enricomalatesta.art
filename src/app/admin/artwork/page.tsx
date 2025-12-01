@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 
 type Technique =
@@ -89,6 +90,7 @@ function dataUrlToBlob(dataUrl: string): Blob {
 }
 
 export default function AdminArtworkPage() {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [webpDataUrl, setWebpDataUrl] = useState<string | null>(null);
   const [isConverting, setIsConverting] = useState(false);
@@ -276,6 +278,9 @@ export default function AdminArtworkPage() {
         setFile(null);
         setWebpDataUrl(null);
         setSelectedId(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       } else {
         // Default: full reset
         setForm({
@@ -293,6 +298,9 @@ export default function AdminArtworkPage() {
         setFile(null);
         setWebpDataUrl(null);
         setSelectedId(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       }
     } catch (err: any) {
       // eslint-disable-next-line no-console
@@ -368,6 +376,7 @@ export default function AdminArtworkPage() {
     <label className="admin-file-label">
     <span>Select artwork image (local disk)</span>
     <input
+    ref={fileInputRef}
     type="file"
     accept="image/*"
     onChange={(e) => {
