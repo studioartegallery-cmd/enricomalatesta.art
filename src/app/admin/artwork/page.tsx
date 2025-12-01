@@ -109,6 +109,8 @@ export default function AdminArtworkPage() {
 
   const [existing, setExisting] = useState<ExistingArtwork[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [keepFields, setKeepFields] = useState(false);
+
 
   // Load existing artworks once on mount
   useEffect(() => {
@@ -181,15 +183,15 @@ export default function AdminArtworkPage() {
     setSelectedId(a.id);
     setForm({
       artist: (a.artist && a.artist.trim()) || "Enrico Malatesta",
-      title: a.title || "",
-      style: ((a.style || "Abstract") as Style),
-      technique: ((a.technique || "Acrylic on canvas") as Technique),
-      widthCm: a.widthCm || "",
-      heightCm: a.heightCm || "",
-      price: a.price || "",
-      creationDate: a.creationDate || "",
-      sold: a.sold === "1" || a.sold === "true",
-      buyUrl: a.buyUrl || "",
+            title: a.title || "",
+            style: ((a.style || "Abstract") as Style),
+            technique: ((a.technique || "Acrylic on canvas") as Technique),
+            widthCm: a.widthCm || "",
+            heightCm: a.heightCm || "",
+            price: a.price || "",
+            creationDate: a.creationDate || "",
+            sold: a.sold === "1" || a.sold === "true",
+            buyUrl: a.buyUrl || "",
     });
     setWebpDataUrl(a.imageUrl || null);
     setFile(null);
@@ -266,6 +268,31 @@ export default function AdminArtworkPage() {
         }
       } catch {
         // ignore refresh failures
+      }
+
+      // Reset form depending on "Keep fields" option
+      if (keepFields) {
+        // For batch uploads: keep metadata, just clear image and selection
+        setFile(null);
+        setWebpDataUrl(null);
+        setSelectedId(null);
+      } else {
+        // Default: full reset
+        setForm({
+          artist: "Enrico Malatesta",
+          title: "",
+          style: "Abstract",
+          technique: "Acrylic on canvas",
+          widthCm: "",
+          heightCm: "",
+          price: "",
+          creationDate: "",
+          sold: false,
+          buyUrl: "",
+        });
+        setFile(null);
+        setWebpDataUrl(null);
+        setSelectedId(null);
       }
     } catch (err: any) {
       // eslint-disable-next-line no-console
@@ -473,31 +500,31 @@ export default function AdminArtworkPage() {
     <label className="admin-field admin-field-date">
     <span>Creation Date</span>
     <input
-      type="date"
-      value={form.creationDate}
-      onChange={(e) => handleChange("creationDate", e.target.value)}
+    type="date"
+    value={form.creationDate}
+    onChange={(e) => handleChange("creationDate", e.target.value)}
     />
     </label>
 
     <label className="admin-field admin-field-inline">
     <span>Sold</span>
     <input
-      type="checkbox"
-      checked={form.sold}
-      onChange={(e) => handleChange("sold", e.target.checked)}
+    type="checkbox"
+    checked={form.sold}
+    onChange={(e) => handleChange("sold", e.target.checked)}
     />
     </label>
 
     <label className="admin-field">
     <span>Buy URL (optional)</span>
     <input
-      type="text"
-      value={form.buyUrl}
-      onChange={(e) => handleChange("buyUrl", e.target.value)}
-      placeholder="https://studioarte.art"
+    type="text"
+    value={form.buyUrl}
+    onChange={(e) => handleChange("buyUrl", e.target.value)}
+    placeholder="https://studioarte.art"
     />
     <p className="admin-note">
-      If empty, the Buy button links to studioarte.art.
+    If empty, the Buy button links to studioarte.art.
     </p>
     </label>
 
@@ -505,6 +532,14 @@ export default function AdminArtworkPage() {
     <button type="submit" className="buy-button" disabled={isSaving}>
     {isSaving ? "Saving…" : "Save artwork to R2"}
     </button>
+    <label className="admin-note">
+    <input
+    type="checkbox"
+    checked={keepFields}
+    onChange={(e) => setKeepFields(e.target.checked)}
+    />{" "}
+    Keep fields after save
+    </label>
     </form>
     </section>
 
