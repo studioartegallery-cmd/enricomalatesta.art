@@ -127,12 +127,14 @@ export default function HomeClient() {
         </div>
         <nav className="footer-nav">
           <a href="/about">About</a>
-          <a href={TERMS_URL} target="_blank" rel="noopener noreferrer">
-            Terms
+          <a href={TERMS_URL} target="_blank">
+          Terms
           </a>
-          <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">
-            Privacy
+
+          <a href={PRIVACY_URL} target="_blank" >
+          Privacy
           </a>
+
 
           <a
             href="#"
