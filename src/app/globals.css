@@ -34,6 +34,15 @@ body {
   color: #f9fafb;
 }
 
+
+.site-subtitle {
+  font-size: 1.2rem;     /* smaller than the title */
+  text-align: center;    /* centered */
+  margin-top: -8px;      /* pulls it slightly closer to the title */
+  opacity: 0.85;         /* slight softness */
+  letter-spacing: 1px;   /* elegant spacing */
+}
+
 /* Main layout */
 
 .main {

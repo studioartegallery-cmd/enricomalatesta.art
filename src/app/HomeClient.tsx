@@ -56,6 +56,7 @@ export default function HomeClient() {
     <div className="page">
       <header className="header">
         <h1 className="site-title">MalatestaArt</h1>
+        <p className="site-subtitle">Portfolio</p>
       </header>
 
       <nav className="top-links">
