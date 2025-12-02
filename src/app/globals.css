@@ -36,12 +36,23 @@ body {
 
 
 .site-subtitle {
-  font-size: 1.2rem;     /* smaller than the title */
-  text-align: center;    /* centered */
-  margin-top: -8px;      /* pulls it slightly closer to the title */
-  opacity: 0.85;         /* slight softness */
-  letter-spacing: 1px;   /* elegant spacing */
+  font-size: 1.6rem;        /* bigger than before */
+  text-align: center;
+  margin-top: 14px;         /* lower than the title */
+  opacity: 0.85;            /* visible, but softer than the title */
+  letter-spacing: 1px;
+  position: relative;
 }
+
+.site-subtitle::before {
+  content: "";
+  display: block;
+  width: 60px;              /* line length */
+  height: 1px;              /* line thickness */
+  margin: 0 auto 8px;       /* centered + small gap before “Portfolio” */
+  background: rgba(255, 255, 255, 0.4);
+}
+
 
 /* Main layout */
 
