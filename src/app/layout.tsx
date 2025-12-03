@@ -5,7 +5,11 @@ import CookieBanner from "@/components/CookieBanner";
 export const metadata: Metadata = {
   title: "MalatestaArt",
   description: "Minimal portfolio of Enrico Malatesta",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -25,6 +29,7 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Tenor+Sans&display=swap"
           rel="stylesheet"
         />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
       </head>
       <body>
         {children}
