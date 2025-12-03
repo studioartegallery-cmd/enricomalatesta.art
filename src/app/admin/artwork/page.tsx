@@ -148,15 +148,28 @@ export default function AdminArtworkPage() {
       const img = new Image();
       img.onload = () => {
         if (cancelled) return;
+        const maxDim = 1600;
+        const origWidth = img.width;
+        const origHeight = img.height;
+
+        let targetWidth = origWidth;
+        let targetHeight = origHeight;
+
+        if (origWidth > maxDim || origHeight > maxDim) {
+          const scale = Math.min(maxDim / origWidth, maxDim / origHeight);
+          targetWidth = Math.round(origWidth * scale);
+          targetHeight = Math.round(origHeight * scale);
+        }
+
         const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
           setIsConverting(false);
           return;
         }
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
         const webp = canvas.toDataURL("image/webp", 0.9);
         if (!cancelled) {
           setWebpDataUrl(webp);
