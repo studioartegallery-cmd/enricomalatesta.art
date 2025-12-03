@@ -52,6 +52,12 @@ export default function HomeClient() {
     filter === "all" ? true : art.type === filter
   );
 
+
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  const yearText =
+  currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`;
+
   return (
     <div className="page">
       <header className="header">
@@ -124,26 +130,23 @@ export default function HomeClient() {
 
       <footer className="footer">
         <div className="footer-copy">
-          &copy; {new Date().getFullYear()} Enrico Malatesta
+        &copy; {yearText} Enrico Malatesta
         </div>
         <nav className="footer-nav">
           <a href="/about">About</a>
           <a href={TERMS_URL} target="_blank">
-          Terms
+            Terms
           </a>
-
-          <a href={PRIVACY_URL} target="_blank" >
-          Privacy
+          <a href={PRIVACY_URL} target="_blank">
+            Privacy
           </a>
-
-
           <a
             href="#"
             onClick={(e) => {
               e.preventDefault();
               document.cookie =
-                "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-              window.location.reload();
+              "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+            window.location.reload();
             }}
           >
             Cookies
@@ -151,6 +154,7 @@ export default function HomeClient() {
           <a href="/blog">Blog</a>
         </nav>
       </footer>
+
     </div>
   );
 }

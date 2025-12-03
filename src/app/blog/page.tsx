@@ -46,6 +46,12 @@ export default function BlogPage() {
     load();
   }, []);
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  const yearText =
+  currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`;
+
+
   return (
     <div className="page">
     <header className="header">
@@ -138,19 +144,18 @@ export default function BlogPage() {
     </main>
 
     <footer className="footer">
-    <div className="footer-copy">&copy; {new Date().getFullYear()} Enrico Malatesta</div>
+    <div className="footer-copy">
+    &copy; {yearText} Enrico Malatesta
+    </div>
     <nav className="footer-nav">
     <a href="/">Home</a>
     <a href="/about">About</a>
     <a href={TERMS_URL} target="_blank">
     Terms
     </a>
-
     <a href={PRIVACY_URL} target="_blank">
     Privacy
     </a>
-
-
     <a
     href="#"
     onClick={(e) => {
@@ -162,9 +167,10 @@ export default function BlogPage() {
     >
     Cookies
     </a>
-    <a href="/blog">Blog</a>
+
     </nav>
     </footer>
+
     </div>
   );
 }

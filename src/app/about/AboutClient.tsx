@@ -15,6 +15,11 @@ export default function AboutClient() {
   // Cache-busting param so we always see the latest image version.
   const [imageSrc] = useState(() => `${ABOUT_IMAGE_URL}&t=${Date.now()}`);
 
+  const startYear = 2025;
+  const currentYear = new Date().getFullYear();
+  const yearText =
+  currentYear > startYear ? `${startYear}–${currentYear}` : `${startYear}`;
+
   return (
     <div className="page">
       <header className="header">
@@ -82,34 +87,30 @@ export default function AboutClient() {
       </main>
 
       <footer className="footer">
-        <div className="footer-copy">
-          &copy; {new Date().getFullYear()} Enrico Malatesta
-        </div>
-        <nav className="footer-nav">
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href={TERMS_URL} target="_blank">
-          Terms
-          </a>
-
-          <a href={PRIVACY_URL} target="_blank">
-          Privacy
-          </a>
-
-
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              document.cookie =
-                "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
-              window.location.reload();
-            }}
-          >
-            Cookies
-          </a>
-          <a href="/blog">Blog</a>
-        </nav>
+      <div className="footer-copy">
+      &copy; {yearText} Enrico Malatesta
+      </div>
+      <nav className="footer-nav">
+      <a href="/">Home</a>
+      <a href={TERMS_URL} target="_blank">
+      Terms
+      </a>
+      <a href={PRIVACY_URL} target="_blank">
+      Privacy
+      </a>
+      <a
+      href="#"
+      onClick={(e) => {
+        e.preventDefault();
+        document.cookie =
+        "emart_cookie_consent=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
+      window.location.reload();
+      }}
+      >
+      Cookies
+      </a>
+      <a href="/blog">Blog</a>
+      </nav>
       </footer>
 
       {/* Scoped styles just for the Instagram line */}
