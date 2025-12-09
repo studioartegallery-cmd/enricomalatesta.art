@@ -12,7 +12,7 @@
     "pages:deploy": "pnpm pages:build && wrangler pages deploy .vercel/output/static"
   },
   "dependencies": {
-    "next": "15.4.1",
+    "next": "15.4.8",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
